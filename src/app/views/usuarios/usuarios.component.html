@@ -1,0 +1,117 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Usuarios</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Filtros -->
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col size="4">
+        <ion-item>
+          <ion-label position="stacked">Filtrar por DNI</ion-label>
+          <ion-input
+            [(ngModel)]="filtroDNI"
+            placeholder="Ingrese DNI"
+            (ionChange)="aplicarFiltros()"
+          ></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="4">
+        <ion-item>
+          <ion-label position="stacked">Filtrar por Estado</ion-label>
+          <ion-select
+            [(ngModel)]="filtroActivo"
+            placeholder="Seleccione estado"
+            (ionChange)="aplicarFiltros()"
+          >
+            <ion-select-option value="todos">Todos</ion-select-option>
+            <ion-select-option value="activos">Activos</ion-select-option>
+            <ion-select-option value="inactivos">Inactivos</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Tabla de Usuarios -->
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col size="2">DNI</ion-col>
+      <ion-col size="3">Nombre</ion-col>
+      <ion-col size="3">Datos de la Subscripción</ion-col>
+      <ion-col size="2">Activo</ion-col>
+      <ion-col size="2">Acciones</ion-col>
+    </ion-row>
+
+    <ng-container *ngFor="let usuario of usuariosFiltrados">
+      <ion-row>
+        <ion-col size="2">{{ usuario?.dni }}</ion-col>
+        <ion-col size="3">{{ usuario?.nombre }}</ion-col>
+        <ion-col size="3">
+          <ion-button
+            size="small"
+            color="primary"
+            fill="outline"
+            (click)="verDatosSubscripcion(usuario?.subscriptionId)"
+          >
+            Ver Datos
+          </ion-button>
+        </ion-col>
+        <ion-col size="2">{{ usuario?.active ? 'Sí' : 'No' }}</ion-col>
+        <ion-col size="2">
+          <ion-button color="tertiary" fill="outline" (click)="toggleActivo(usuario)">
+            {{ usuario?.active ? 'Desactivar' : 'Activar' }}
+          </ion-button>
+          <ion-button
+            color="success"
+            fill="outline"
+            (click)="irChatWhatsApp(usuario?.telefono)"
+          >
+            WhatsApp
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ng-container>
+  </ion-grid>
+
+  <!-- Modal para mostrar los datos de la suscripción -->
+  <ion-modal [isOpen]="mostrarModal" (ionModalDidDismiss)="cerrarModal()">
+    <ng-container *ngIf="subscripcionSeleccionada">
+      <ion-header>
+        <ion-toolbar color="primary">
+          <ion-title>Datos de la Suscripción</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="cerrarModal()">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list>
+          <ion-item>
+            <ion-label>DNI: {{ subscripcionSeleccionada.dni }}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Email: {{ subscripcionSeleccionada.email }}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Nombre: {{ subscripcionSeleccionada.nombre }}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Precio: ${{ subscripcionSeleccionada.price }}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Estado: {{ getEstadoLegible(subscripcionSeleccionada.status) }}</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Fecha de creación: {{ formatFecha(subscripcionSeleccionada.createdAt) }}</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-container>
+  </ion-modal>
+</ion-content>

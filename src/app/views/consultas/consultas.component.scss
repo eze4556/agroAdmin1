@@ -1,0 +1,30 @@
+.custom-item {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+
+  label {
+    font-size: 14px;
+    color: #ffffff; /* Color blanco para el texto del label */
+    margin-bottom: 5px;
+  }
+
+  .custom-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: #ffffff; /* Color blanco para el texto del input */
+    background-color: #333333; /* Fondo oscuro para contraste */
+    border: 1px solid #555555; /* Borde sutil */
+    border-radius: 4px;
+  }
+
+  .custom-input::placeholder {
+    color: #aaaaaa; /* Color gris para el placeholder */
+  }
+
+  .custom-input:focus {
+    outline: none;
+    border-color: #00aaff; /* Color azul en el foco */
+  }
+}

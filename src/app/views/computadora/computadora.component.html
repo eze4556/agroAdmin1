@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Computadoras</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Botón para abrir el modal -->
+  <ion-button expand="block" color="primary" (click)="openModal()">
+    <ion-icon slot="start" name="add"></ion-icon> Agregar Computadora
+  </ion-button>
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col size="12" sizeMd="6" sizeLg="4" *ngFor="let computadora of computadoras">
+        <ion-card (click)="verDetalles(computadora)">
+          <!-- Mostrar imagen si está disponible -->
+<img [src]="computadora.imagen" *ngIf="computadora?.imagen" onerror="this.style.display='none'" />
+          <ion-card-header>
+            <ion-card-title>{{ computadora.nombre }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p>Haz clic para ver más detalles.</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+  <!-- Modal para agregar/editar computadora -->
+  <ion-modal [isOpen]="isModalOpen">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Agregar Computadora</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="closeModal()">Cerrar</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content>
+        <form [formGroup]="computadoraForm" (ngSubmit)="agregarOEditarComputadora()">
+          <ion-item>
+            <ion-label position="stacked">Nombre</ion-label>
+            <ion-input formControlName="nombre"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="stacked">Imagen</ion-label>
+            <input type="file" (change)="onFileSelected($event)">
+          </ion-item>
+          <ion-footer>
+            <ion-button expand="full" type="submit">Agregar</ion-button>
+          </ion-footer>
+        </form>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>
