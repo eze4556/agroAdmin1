@@ -17,12 +17,17 @@ import { IonBackButton, IonButton, IonButtons, IonCard, IonCardContent, IonCardH
   ]
 })
 export class CompSeccionesComponent implements OnInit {
+  [key: string]: any; // Permite índices dinámicos
   computadora: Computadoras | null = null;
   isLoading: boolean = true;
 
-  softwareArchivos: any[] = [];
-  documentosArchivos: any[] = [];
+  manualesArchivos: any[] = [];
   planosArchivos: any[] = [];
+  videosArchivos: any[] = [];
+  softwareArchivos: any[] = [];
+
+  newVideoUrl: string = '';
+  newSoftwareUrl: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -34,9 +39,10 @@ export class CompSeccionesComponent implements OnInit {
     if (id) {
       try {
         this.computadora = await this.firestoreService.getComputadoraById(id);
-        await this.loadArchivos('software');
-        await this.loadArchivos('documentos');
+        await this.loadArchivos('manuales');
         await this.loadArchivos('planos');
+        await this.loadArchivos('videos');
+        await this.loadArchivos('software');
       } catch (error) {
         console.error('Error al obtener los detalles de la computadora:', error);
       } finally {
@@ -50,13 +56,7 @@ export class CompSeccionesComponent implements OnInit {
 
     try {
       const archivos = await this.firestoreService.getArchivos(this.computadora.id, seccion);
-      if (seccion === 'software') {
-        this.softwareArchivos = archivos;
-      } else if (seccion === 'documentos') {
-        this.documentosArchivos = archivos;
-      } else if (seccion === 'planos') {
-        this.planosArchivos = archivos;
-      }
+      this[`${seccion}Archivos`] = archivos;
     } catch (error) {
       console.error(`Error al cargar archivos de la sección ${seccion}:`, error);
     }
@@ -70,9 +70,82 @@ export class CompSeccionesComponent implements OnInit {
     try {
       await this.firestoreService.addArchivo(this.computadora.id, seccion, archivo);
       await this.loadArchivos(seccion);
-      console.log(`Archivo subido correctamente a la sección ${seccion}`);
     } catch (error) {
       console.error(`Error al subir archivo a la sección ${seccion}:`, error);
     }
   }
+
+  async onAddUrl(seccion: string) {
+    let url = '';
+
+    if (seccion === 'videos') {
+      url = this.newVideoUrl;
+    } else if (seccion === 'software') {
+      url = this.newSoftwareUrl;
+    }
+
+    if (!this.computadora?.id) {
+      console.error('No se pudo identificar la computadora. Por favor, intente nuevamente.');
+      return;
+    }
+
+    if (!url.trim()) { // Validar que no esté vacío
+      console.error('Por favor, ingrese una URL válida.');
+      return;
+    }
+
+    try {
+      await this.firestoreService.addUrlToSection(this.computadora.id, seccion, url);
+
+      // Limpiar el campo de entrada
+      if (seccion === 'videos') {
+        this.newVideoUrl = '';
+      } else if (seccion === 'software') {
+        this.newSoftwareUrl = '';
+      }
+
+      await this.loadArchivos(seccion); // Recargar la lista
+      console.log(`URL agregada correctamente a la sección ${seccion}`);
+    } catch (error) {
+      console.error(`Error al agregar URL en la sección ${seccion}:`, error);
+    }
+  }
+
+  async onDeleteUrl(archivo: any, seccion: string) {
+    if (!this.computadora?.id || !archivo.id) return;
+
+    try {
+      await this.firestoreService.deleteUrl(this.computadora.id, seccion, archivo.id);
+      await this.loadArchivos(seccion);
+    } catch (error) {
+      console.error(`Error al eliminar archivo en la sección ${seccion}:`, error);
+    }
+  }
+
+
+
+
+
+  async onDeleteArchivo(archivo: any, seccion: string) {
+    if (!this.computadora?.id) return;
+
+    try {
+      if (archivo.url) {
+        // Es una URL (videos/software)
+        await this.firestoreService.deleteUrl(this.computadora.id, seccion, archivo.id);
+      } else {
+        // Es un archivo subido (manuales/planos)
+        const filePath = archivo.url.split('cloudflarestorage.com/')[1]; // Extraer el path real del archivo
+        await this.firestoreService.deleteArchivo(this.computadora.id, seccion, archivo.id, filePath);
+      }
+
+      await this.loadArchivos(seccion);
+      console.log(`Archivo eliminado en la sección ${seccion}`);
+    } catch (error) {
+      console.error(`Error al eliminar archivo en la sección ${seccion}:`, error);
+    }
+  }
+
+
 }
+

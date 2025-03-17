@@ -61,7 +61,7 @@ private readonly R2_ENDPOINT = 'https://06425c0d4069fc4e0e5d08120f2be6af.r2.clou
   private readonly R2_SECRET_ACCESS_KEY = '701a1dab83a687a60ae66beb7d53db06182cd01694e270ea095b695863838585';
 
 
- 
+
 
   // Usuario
   // Eliminar un usuario
@@ -134,7 +134,7 @@ private readonly R2_ENDPOINT = 'https://06425c0d4069fc4e0e5d08120f2be6af.r2.clou
         const imageUrl = await this.uploadToR2(imagen, `computadoras/${uuidv4()}-${imagen.name}`);
         computadora.imagen = imageUrl;
       }
-      
+
       const id = uuidv4();
       const docRef = doc(this.firestore, `computadoras/${id}`);
       await setDoc(docRef, { ...computadora, id });
@@ -196,6 +196,24 @@ private readonly R2_ENDPOINT = 'https://06425c0d4069fc4e0e5d08120f2be6af.r2.clou
     }
   }
 
+  async addUrlToSection(computadoraId: string, seccion: string, url: string): Promise<void> {
+    try {
+      if (!computadoraId || !url) {
+        throw new Error('El ID de la computadora o la URL son inválidos.');
+      }
+
+      const docRef = doc(collection(this.firestore, `computadoras/${computadoraId}/${seccion}`));
+      await setDoc(docRef, { id: docRef.id, url }); // Guardamos la URL con un ID único
+
+      console.log(`URL añadida a la sección ${seccion} de la computadora ${computadoraId}`);
+    } catch (error) {
+      console.error(`Error al agregar la URL a la sección ${seccion}:`, error);
+      throw error;
+    }
+  }
+
+
+
   // 🔹 Agregar archivos a Cloudflare R2 dentro de una sección de una computadora
   async addArchivo(computadoraId: string, seccion: string, archivo: File) {
     try {
@@ -217,6 +235,67 @@ private readonly R2_ENDPOINT = 'https://06425c0d4069fc4e0e5d08120f2be6af.r2.clou
     const archivosSnapshot = await getDocs(collection(this.firestore, `computadoras/${computadoraId}/${seccion}`));
     return archivosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   }
+
+// 🔹 Eliminar archivo físico en Cloudflare y referencia en Firestore
+async deleteArchivo(computadoraId: string, seccion: string, archivoId: string, filePath: string) {
+  try {
+    if (!computadoraId || !archivoId || !filePath) {
+      throw new Error('Parámetros inválidos para eliminar el archivo.');
+    }
+
+    await this.deleteFromR2(filePath); // Eliminar archivo en Cloudflare R2
+
+    const archivoRef = doc(this.firestore, `computadoras/${computadoraId}/${seccion}/${archivoId}`);
+    await deleteDoc(archivoRef);
+
+    console.log(`Archivo eliminado en ${seccion} con ID: ${archivoId}`);
+  } catch (error) {
+    console.error(`Error al eliminar archivo de la sección ${seccion}:`, error);
+    throw error;
+  }
+}
+
+// 🔹 Eliminar URL de Firestore (para videos/software)
+async deleteUrl(computadoraId: string, seccion: string, archivoId: string) {
+  try {
+    if (!computadoraId || !archivoId) {
+      throw new Error('Parámetros inválidos para eliminar la URL.');
+    }
+
+    const archivoRef = doc(this.firestore, `computadoras/${computadoraId}/${seccion}/${archivoId}`);
+    await deleteDoc(archivoRef);
+
+    console.log(`URL eliminada en ${seccion} con ID: ${archivoId}`);
+  } catch (error) {
+    console.error(`Error al eliminar URL de la sección ${seccion}:`, error);
+    throw error;
+  }
+}
+
+
+// 🔹 Función auxiliar para eliminar un archivo en Cloudflare R2
+async deleteIMGFromR2(filePath: string) {
+  try {
+    // Implementa aquí la lógica para eliminar el archivo en Cloudflare R2
+    // Ejemplo de API para R2 (puede variar según tu integración)
+    const response = await fetch(`https://<tu-r2-endpoint>/${filePath}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer <tu-token-de-acceso>`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error eliminando archivo en R2: ${response.statusText}`);
+    }
+
+    console.log(`Archivo ${filePath} eliminado de Cloudflare R2`);
+  } catch (error) {
+    console.error('Error eliminando archivo en Cloudflare R2:', error);
+    throw error;
+  }
+}
+
 
   // 🔹 Obtener una computadora por ID
   async getComputadoraById(id: string): Promise<Computadoras | null> {
