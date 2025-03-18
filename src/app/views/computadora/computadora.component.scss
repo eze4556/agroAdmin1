@@ -81,3 +81,30 @@ ion-card-title {
 ion-grid {
   padding: 16px;
 }
+
+.custom-select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 16px;
+  appearance: none; /* Elimina el estilo por defecto del navegador */
+  -webkit-appearance: none; /* Para navegadores basados en WebKit como Safari */
+  -moz-appearance: none; /* Para Firefox */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23000000"><path d="M7 10l5 5 5-5z"/></svg>'); /* Flecha personalizada */
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+}
+
+.custom-select:focus {
+  border-color: #3880ff; /* Color de enfoque similar a Ionic */
+  outline: none;
+}
+
+/* Estilo para el contenedor de ion-item */
+ion-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+}

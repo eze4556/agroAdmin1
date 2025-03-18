@@ -25,9 +25,11 @@ export class CompSeccionesComponent implements OnInit {
   planosArchivos: any[] = [];
   videosArchivos: any[] = [];
   softwareArchivos: any[] = [];
-
+  otrosArchivos: any[] = []
   newVideoUrl: string = '';
   newSoftwareUrl: string = '';
+  newVideoNombre: string= '';
+  newSoftwareNombre: string='';
 
   constructor(
     private route: ActivatedRoute,
@@ -43,6 +45,7 @@ export class CompSeccionesComponent implements OnInit {
         await this.loadArchivos('planos');
         await this.loadArchivos('videos');
         await this.loadArchivos('software');
+        await this.loadArchivos('otros');
       } catch (error) {
         console.error('Error al obtener los detalles de la computadora:', error);
       } finally {
@@ -50,6 +53,7 @@ export class CompSeccionesComponent implements OnInit {
       }
     }
   }
+
 
   async loadArchivos(seccion: string) {
     if (!this.computadora?.id) return;
@@ -77,11 +81,14 @@ export class CompSeccionesComponent implements OnInit {
 
   async onAddUrl(seccion: string) {
     let url = '';
+    let nombre = '';
 
     if (seccion === 'videos') {
       url = this.newVideoUrl;
+      nombre = this.newVideoNombre;
     } else if (seccion === 'software') {
       url = this.newSoftwareUrl;
+      nombre = this.newSoftwareNombre;
     }
 
     if (!this.computadora?.id) {
@@ -89,19 +96,21 @@ export class CompSeccionesComponent implements OnInit {
       return;
     }
 
-    if (!url.trim()) { // Validar que no esté vacío
-      console.error('Por favor, ingrese una URL válida.');
+    if (!nombre.trim() || !url.trim()) { // Validar que ambos campos sean obligatorios
+      console.error('Por favor, ingrese un nombre y una URL válida.');
       return;
     }
 
     try {
-      await this.firestoreService.addUrlToSection(this.computadora.id, seccion, url);
+      await this.firestoreService.addUrlToSection(this.computadora.id, seccion, nombre, url);
 
-      // Limpiar el campo de entrada
+      // Limpiar los campos de entrada
       if (seccion === 'videos') {
         this.newVideoUrl = '';
+        this.newVideoNombre = '';
       } else if (seccion === 'software') {
         this.newSoftwareUrl = '';
+        this.newSoftwareNombre = '';
       }
 
       await this.loadArchivos(seccion); // Recargar la lista
@@ -110,6 +119,7 @@ export class CompSeccionesComponent implements OnInit {
       console.error(`Error al agregar URL en la sección ${seccion}:`, error);
     }
   }
+
 
   async onDeleteUrl(archivo: any, seccion: string) {
     if (!this.computadora?.id || !archivo.id) return;

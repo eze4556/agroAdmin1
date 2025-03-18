@@ -41,15 +41,35 @@
 
     <ion-card>
       <ion-card-header>
+        <ion-card-title>Otros</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <input type="file" (change)="onFileSelected($event, 'otros')" />
+        <ion-list>
+          <ion-item *ngFor="let archivo of otrosArchivos">
+            <ion-label>{{ archivo.nombre }}</ion-label>
+            <ion-button (click)="onDeleteArchivo(archivo, 'otros')" color="danger">Eliminar</ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
         <ion-card-title>Videos</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <input type="text" placeholder="Ingrese URL" [(ngModel)]="newVideoUrl" />
-        <ion-button (click)="onAddUrl('videos')" color="primary">Agregar</ion-button>
+        <div class="input-container">
+          <input class="custom-input" type="text" placeholder="Ingrese Nombre" [(ngModel)]="newVideoNombre" />
+          <input class="custom-input" type="text" placeholder="Ingrese URL" [(ngModel)]="newVideoUrl" />
+          <ion-button class="custom-button" (click)="onAddUrl('videos')" color="primary">Agregar</ion-button>
+        </div>
         <ion-list>
-          <ion-item *ngFor="let url of videosArchivos">
-            <ion-label>{{ url.url }}</ion-label>
-            <ion-button (click)="onDeleteArchivo(url, 'videos')" color="danger">Eliminar</ion-button>
+          <ion-item *ngFor="let item of videosArchivos">
+            <ion-label class="item-label">
+              <strong>{{ item.nombre }}</strong> - {{ item.url }}
+            </ion-label>
+            <ion-button (click)="onDeleteArchivo(item, 'videos')" color="danger">Eliminar</ion-button>
           </ion-item>
         </ion-list>
       </ion-card-content>
@@ -60,12 +80,17 @@
         <ion-card-title>Software</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <input type="text" placeholder="Ingrese URL" [(ngModel)]="newSoftwareUrl" />
-        <ion-button (click)="onAddUrl('software')" color="primary">Agregar</ion-button>
+        <div class="input-container">
+          <input class="custom-input" type="text" placeholder="Ingrese Nombre" [(ngModel)]="newSoftwareNombre" />
+          <input class="custom-input" type="text" placeholder="Ingrese URL" [(ngModel)]="newSoftwareUrl" />
+          <ion-button class="custom-button" (click)="onAddUrl('software')" color="primary">Agregar</ion-button>
+        </div>
         <ion-list>
-          <ion-item *ngFor="let url of softwareArchivos">
-            <ion-label>{{ url.url }}</ion-label>
-            <ion-button (click)="onDeleteArchivo(url, 'software')" color="danger">Eliminar</ion-button>
+          <ion-item *ngFor="let item of softwareArchivos">
+            <ion-label class="item-label">
+              <strong>{{ item.nombre }}</strong> - {{ item.url }}
+            </ion-label>
+            <ion-button (click)="onDeleteArchivo(item, 'software')" color="danger">Eliminar</ion-button>
           </ion-item>
         </ion-list>
       </ion-card-content>

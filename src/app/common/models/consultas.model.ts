@@ -5,4 +5,5 @@ export interface ConsultaI {
   paymentDate: Date;
   price: number;
   status: string;
+  comentario:string;
 }

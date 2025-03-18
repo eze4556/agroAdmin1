@@ -2,10 +2,8 @@ import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@an
 import { OverlayEventDetail } from '@ionic/core/components';
 import { FirestoreService } from '../../common/services/firestore.service';
 import { Computadoras } from '../../common/models/computadora.model';
-
 import { FormsModule, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
 import {
   IonItem,
   IonButton,
@@ -21,22 +19,22 @@ import {
   IonCardHeader,
   IonIcon,
   IonCardTitle,
-  IonList,
   IonCardContent,
   IonToolbar,
   IonTitle,
-  IonHeader, IonBackButton, IonButtons, IonSpinner, IonSelectOption, IonSelect, IonSearchbar, IonAvatar } from '@ionic/angular/standalone';
+  IonHeader, IonBackButton, IonButtons,
+  IonSelectOption} from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 
 @Component({
   standalone: true,
-  imports: [ CommonModule, FormsModule, ReactiveFormsModule,IonAvatar, IonSearchbar, IonSpinner, IonButtons, IonBackButton,
+  imports: [ CommonModule, FormsModule, ReactiveFormsModule, IonButtons, IonBackButton,
     IonHeader,
     IonTitle,
     IonToolbar,
     IonItem,
-     IonIcon,
-     IonFooter,
+    IonIcon,
+    IonFooter,
     IonInput,
     IonLabel,
     IonContent,
@@ -46,29 +44,26 @@ import { Router } from '@angular/router';
     IonCard,
     IonCardHeader,
     IonCardTitle,
-    IonList,
     IonCardContent,
-     IonModal,
+    IonModal,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    IonSelectOption,
-    IonSelect,
-    IonButton],
+    IonButton, IonSelectOption],
   selector: 'app-computadora',
   templateUrl: './computadora.component.html',
   styleUrls: ['./computadora.component.scss'],
 })
 export class ComputadoraPage implements OnInit {
   computadoras: Computadoras[] = [];
-  nuevaComputadora: Computadoras = { nombre: '', imagen: '' };
+  nuevaComputadora: Computadoras = { nombre: '', imagen: '', tipo_pc:'' };
   computadoraForm: FormGroup;
   isModalOpen: boolean = false;
   editMode: boolean = false;
   computadoraAEditar: Computadoras | null = null;
   imagenComputadora: File | null = null;
 
-   @ViewChild(IonModal) modal!: IonModal;
+  @ViewChild(IonModal) modal!: IonModal;
   computadora: any;
 
   constructor(
@@ -80,7 +75,8 @@ export class ComputadoraPage implements OnInit {
     this.computadoraForm = this.fb.group({
       id: [''],
       nombre: ['', Validators.required],
-      imagen: ['']
+      imagen: [''],
+      tipo_pc: ['', Validators.required], // Agregado
     });
   }
 
@@ -121,7 +117,7 @@ export class ComputadoraPage implements OnInit {
   }
 
   async agregarComputadora(nombre: string, imagen: File) {
-    const nuevaComputadora: Computadoras = { nombre, imagen: '' };
+    const nuevaComputadora: Computadoras = { nombre, imagen: '', tipo_pc: '' };
     try {
       const computadoraAgregada = await this.firestoreService.addComputadora(nuevaComputadora, imagen);
       this.computadoras.push(computadoraAgregada); // Asegurarse de que la categoría agregada tenga el id correcto
@@ -187,7 +183,6 @@ async agregarOEditarComputadora() {
     }
   }
 
-
   openModal() {
     this.isModalOpen = true;
     this.editMode = false;
@@ -206,15 +201,4 @@ async agregarOEditarComputadora() {
     this.router.navigate(['/computadora-detalle', computadora.id]);
   }
 
-
-
 }
-
-
-
-
-
-
-
-
-

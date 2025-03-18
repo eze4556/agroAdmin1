@@ -19,10 +19,10 @@ export const routes: Routes = [
     path: 'computadora',
     loadComponent: () => import('./views/computadora/computadora.component').then(m => m.ComputadoraPage),
   },
-  // {
-  //   path: 'computadora',
-  //   loadComponent: () => import('./views/computadora/computadora.component').then((m) => m.ComputadoraPage),
-  // },
+  {
+    path: 'precios',
+    loadComponent: () => import('./views/precios/precios.component').then((m) => m.PreciosComponent),
+  },
   {
     path: 'computadora-detalle/:id',
     loadComponent: () => import('./views/comp-secciones/comp-secciones.component').then((m) => m.CompSeccionesComponent),

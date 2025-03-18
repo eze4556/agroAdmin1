@@ -11,6 +11,7 @@
   <!-- Filtros -->
   <ion-grid fixed>
     <ion-row>
+
       <ion-col size="6">
         <div class="custom-item">
           <label for="emailFilter">Filtrar por Email</label>
@@ -23,39 +24,74 @@
           />
         </div>
       </ion-col>
+      <ion-col size="6">
+        <div class="custom-item">
+          <label for="dniFilter">Filtrar por DNI</label>
+          <input
+            id="dniFilter"
+            [(ngModel)]="filtroDni"
+            placeholder="Ingrese dni"
+            (input)="aplicarFiltros()"
+            class="custom-input"
+          />
+        </div>
+      </ion-col>
     </ion-row>
   </ion-grid>
 
   <!-- Tabla de Consultas -->
   <ion-grid fixed>
-    <ion-row>
-      <ion-col size="2">DNI</ion-col>
-      <ion-col size="2">Email</ion-col>
-      <ion-col size="3">Fecha</ion-col>
-      <ion-col size="1">Precio</ion-col>
-      <ion-col size="2">Estado</ion-col>
-      <ion-col size="2">Acciones</ion-col>
+    <ion-row class="header-row">
+      <ion-col size="2"><strong>DNI</strong></ion-col>
+      <ion-col size="3"><strong>Email</strong></ion-col>
+      <ion-col size="1"><strong>Precio</strong></ion-col>
+      <ion-col size="2"><strong>Estado</strong></ion-col>
+      <ion-col size="4"><strong>Acciones</strong></ion-col>
     </ion-row>
 
     <ng-container *ngFor="let consulta of consultasFiltradas">
       <ion-row>
         <ion-col size="2">{{ consulta?.dni }}</ion-col>
-        <ion-col size="2">{{ consulta?.payerEmail }}</ion-col>
-        <ion-col size="3">
-          {{ consulta?.paymentDate | date: 'dd/MM/yyyy HH:mm' }}
-        </ion-col>
+        <ion-col size="3">{{ consulta?.payerEmail }}</ion-col>
         <ion-col size="1">{{ consulta?.price | currency: 'USD' }}</ion-col>
         <ion-col size="2">{{ consulta?.status }}</ion-col>
-        <ion-col size="2">
-          <ion-button
-            color="danger"
-            fill="outline"
-            (click)="eliminarConsulta(consulta)"
-          >
+        <ion-col size="4">
+          <ion-button color="danger" fill="outline" (click)="eliminarConsulta(consulta)">
             Eliminar
+          </ion-button>
+          <ion-button color="secondary" fill="outline" (click)="abrirModalComentario(consulta)">
+            Comentario
           </ion-button>
         </ion-col>
       </ion-row>
     </ng-container>
   </ion-grid>
 </ion-content>
+
+<!-- Modal de Comentario -->
+<ion-modal [isOpen]="modalOpen" (didDismiss)="cerrarModal()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Agregar Comentario</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="cerrarModal()">Cerrar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <div class="modal-content">
+        <label for="comentario">Comentario:</label>
+        <input
+          id="comentario"
+          [(ngModel)]="comentario"
+          class="custom-input"
+          placeholder="Escribe un comentario"
+        />
+
+        <ion-button expand="full" (click)="guardarComentario()">Guardar</ion-button>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

@@ -42,7 +42,7 @@ import { S3 } from 'aws-sdk';
 })
 export class FirestoreService {
     private s3: S3;
-
+    private preciosDocId = 'VD5K0j4QwvEeuUubztak';
     constructor(private firestore: Firestore, private storage: Storage) {
     this.s3 = new S3({
       endpoint: 'https://06425c0d4069fc4e0e5d08120f2be6af.r2.cloudflarestorage.com',
@@ -61,7 +61,35 @@ private readonly R2_ENDPOINT = 'https://06425c0d4069fc4e0e5d08120f2be6af.r2.clou
   private readonly R2_SECRET_ACCESS_KEY = '701a1dab83a687a60ae66beb7d53db06182cd01694e270ea095b695863838585';
 
 
+// 🔹 Obtener los precios del documento único
+async getPrecios(): Promise<{ consultas: number; suscripciones: number; consultas_tec: number } | null> {
+  try {
+    const preciosRef = doc(this.firestore, `precios/${this.preciosDocId}`);
+    const preciosSnap = await getDoc(preciosRef);
 
+    if (preciosSnap.exists()) {
+      return preciosSnap.data() as { consultas: number; suscripciones: number; consultas_tec: number };
+    } else {
+      console.error('El documento de precios no existe.');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error obteniendo los precios:', error);
+    return null;
+  }
+}
+
+// 🔹 Actualizar los precios en el documento único
+async updatePrecios(nuevosPrecios: { consultas: number; suscripciones: number; consultas_tec: number }): Promise<void> {
+  try {
+    const preciosRef = doc(this.firestore, `precios/${this.preciosDocId}`);
+    await updateDoc(preciosRef, nuevosPrecios);
+    console.log('Precios actualizados correctamente');
+  } catch (error) {
+    console.error('Error actualizando los precios:', error);
+    throw error;
+  }
+}
 
   // Usuario
   // Eliminar un usuario
@@ -196,14 +224,14 @@ private readonly R2_ENDPOINT = 'https://06425c0d4069fc4e0e5d08120f2be6af.r2.clou
     }
   }
 
-  async addUrlToSection(computadoraId: string, seccion: string, url: string): Promise<void> {
+  async addUrlToSection(computadoraId: string, seccion: string, nombre: string, url: string): Promise<void> {
     try {
-      if (!computadoraId || !url) {
-        throw new Error('El ID de la computadora o la URL son inválidos.');
+      if (!computadoraId || !nombre || !url) {
+        throw new Error('El ID de la computadora, el nombre o la URL son inválidos.');
       }
 
       const docRef = doc(collection(this.firestore, `computadoras/${computadoraId}/${seccion}`));
-      await setDoc(docRef, { id: docRef.id, url }); // Guardamos la URL con un ID único
+      await setDoc(docRef, { id: docRef.id, nombre, url }); // Guardamos la URL con nombre y un ID único
 
       console.log(`URL añadida a la sección ${seccion} de la computadora ${computadoraId}`);
     } catch (error) {
@@ -211,6 +239,7 @@ private readonly R2_ENDPOINT = 'https://06425c0d4069fc4e0e5d08120f2be6af.r2.clou
       throw error;
     }
   }
+
 
 
 
@@ -336,6 +365,18 @@ async deleteIMGFromR2(filePath: string) {
       throw error;
     }
   }
+
+  async updateConsulta(id: string, data: Partial<ConsultaI>): Promise<void> {
+    try {
+      const consultaRef = doc(this.firestore, 'consultas', id);
+      await updateDoc(consultaRef, data);
+      console.log(`Consulta actualizada: ${id}`, data);
+    } catch (error) {
+      console.error('Error actualizando consulta:', error);
+      throw error;
+    }
+  }
+
 
   async getConsultas(): Promise<ConsultaI[]> {
     const consultasSnapshot = await getDocs(collection(this.firestore, 'consultas'));

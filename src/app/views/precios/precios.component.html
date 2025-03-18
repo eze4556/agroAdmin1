@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Precios</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Administrar Precios</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ng-container *ngIf="loading; else content">
+        <ion-spinner></ion-spinner>
+      </ng-container>
+
+      <ng-template #content>
+        <div class="input-group">
+          <label for="consultas">Consultas:</label>
+          <input id="consultas" type="number" [(ngModel)]="precios.consultas" class="custom-input">
+        </div>
+
+        <div class="input-group">
+          <label for="suscripciones">Suscripciones:</label>
+          <input id="suscripciones" type="number" [(ngModel)]="precios.suscripciones" class="custom-input">
+        </div>
+
+        <div class="input-group">
+          <label for="consultas_tec">Consultas Técnicas:</label>
+          <input id="consultas_tec" type="number" [(ngModel)]="precios.consultas_tec" class="custom-input">
+        </div>
+
+        <ion-button expand="full" (click)="savePrecios()" [disabled]="updating">
+          <ion-spinner *ngIf="updating"></ion-spinner>
+          <span *ngIf="!updating">Guardar Cambios</span>
+        </ion-button>
+      </ng-template>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
