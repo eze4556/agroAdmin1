@@ -8,35 +8,42 @@
 </ion-header>
 
 <ion-content>
-  <!-- Filtros -->
-  <ion-grid fixed>
-    <ion-row>
-      <ion-col size="4">
-        <ion-item>
-          <ion-label position="stacked">Filtrar por DNI</ion-label>
-          <ion-input
-            [(ngModel)]="filtroDNI"
-            placeholder="Ingrese DNI"
-            (ionChange)="aplicarFiltros()"
-          ></ion-input>
-        </ion-item>
-      </ion-col>
-      <ion-col size="4">
-        <ion-item>
-          <ion-label position="stacked">Filtrar por Estado</ion-label>
-          <ion-select
-            [(ngModel)]="filtroActivo"
-            placeholder="Seleccione estado"
-            (ionChange)="aplicarFiltros()"
-          >
-            <ion-select-option value="todos">Todos</ion-select-option>
-            <ion-select-option value="activos">Activos</ion-select-option>
-            <ion-select-option value="inactivos">Inactivos</ion-select-option>
-          </ion-select>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+
+<!-- Filtros -->
+<ion-grid fixed>
+  <ion-row>
+    <ion-col size="4">
+      <div class="filter-item">
+        <label for="dni-filter">Filtrar por DNI</label>
+        <input
+          id="dni-filter"
+          type="text"
+          [(ngModel)]="filtroDNI"
+          placeholder="Ingrese DNI"
+          (input)="aplicarFiltros()"
+          class="input-normal"
+        />
+      </div>
+    </ion-col>
+    <ion-col size="4">
+      <div class="filter-item">
+        <label for="estado-filter">Filtrar por Estado</label>
+        <select
+          id="estado-filter"
+          [(ngModel)]="filtroActivo"
+          (change)="aplicarFiltros()"
+          class="input-normal"
+        >
+          <option value="todos">Todos</option>
+          <option value="activos">Activos</option>
+          <option value="inactivos">Inactivos</option>
+        </select>
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+
+
 
   <!-- Tabla de Usuarios -->
   <ion-grid fixed>
