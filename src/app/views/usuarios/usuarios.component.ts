@@ -5,16 +5,17 @@ import { UserI } from 'src/app/common/models/users.models';
 import { OverlayEventDetail } from '@ionic/core';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { formatDate } from '@angular/common';
+import { IonBackButton, IonButton, IonButtons, IonCol, IonContent, IonGrid, IonHeader, IonItem, IonLabel, IonList, IonModal, IonRow, IonSelectOption, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 
 @Component({
   standalone: true,
   imports: [
 CommonModule,
-    IonicModule,
+    IonHeader, IonToolbar,IonButtons,IonButton, IonBackButton,IonTitle, IonContent,IonGrid,IonRow,IonCol,IonItem,
+    IonLabel, IonModal, IonSelectOption, IonList,
     FormsModule,
     ReactiveFormsModule,
   ],
