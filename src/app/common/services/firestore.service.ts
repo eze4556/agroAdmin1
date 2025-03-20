@@ -408,6 +408,40 @@ async deleteIMGFromR2(filePath: string) {
       throw error;
     }
   }
+
+  async getConsultasManual(): Promise<any[]> {
+    const consultasSnapshot = await getDocs(collection(this.firestore, 'consultasManual'));
+    return consultasSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as any[];
+  }
+
+  async addConsultaManual(consulta: Partial<any>): Promise<void> {
+    try {
+        const id = uuidv4();
+        const fechaCreacion = new Date().toISOString(); // Fecha en formato ISO
+        const consultaRef = doc(this.firestore, 'consultasManual', id);
+        await setDoc(consultaRef, { ...consulta, id, fechaCreacion });
+        console.log(`Consulta manual añadida con id: ${id}`);
+    } catch (error) {
+        console.error('Error añadiendo consulta manual:', error);
+        throw error;
+    }
+}
+
+
+  async deleteConsultaManual(id: string): Promise<void> {
+    try {
+      const consultaRef = doc(this.firestore, 'consultasManual', id);
+      await deleteDoc(consultaRef);
+      console.log(`Consulta manual eliminada: ${id}`);
+    } catch (error) {
+      console.error('Error eliminando consulta manual:', error);
+      throw error;
+    }
+  }
+
 }
 
 

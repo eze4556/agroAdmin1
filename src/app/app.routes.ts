@@ -1,6 +1,7 @@
 import { Routes,RouterModule } from '@angular/router';
 
 import { HomeComponent } from './views/home/home.component';
+import { ConsultasManualesComponent } from './views/consultas-manuales/consultas-manuales.component';
 
 
 
@@ -15,6 +16,7 @@ export const routes: Routes = [
     path: 'consultas',
     loadComponent: () => import('./views/consultas/consultas.component').then((m) => m.ConsultasComponent),
   },
+  { path: 'consultas-manuales', component: ConsultasManualesComponent },
   {
     path: 'computadora',
     loadComponent: () => import('./views/computadora/computadora.component').then(m => m.ComputadoraPage),

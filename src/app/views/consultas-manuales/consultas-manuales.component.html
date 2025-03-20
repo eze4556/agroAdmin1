@@ -1,0 +1,143 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Consultas Manuales</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid fixed>
+        <!-- Formulario desplegable -->
+        <ion-row>
+          <ion-col size="12">
+            <ion-item>
+              <ion-label>Agregar Consulta Manual</ion-label>
+              <ion-button slot="end" (click)="toggleFormulario()">
+                {{ mostrarFormulario ? 'Ocultar' : 'Mostrar' }}
+              </ion-button>
+            </ion-item>
+            <div *ngIf="mostrarFormulario">
+              <form (ngSubmit)="agregarConsultaManual()" class="modal-content">
+                <ion-item>
+                  <ion-label position="floating">DNI</ion-label>
+                  <input
+                    [(ngModel)]="nuevaConsulta['dni']"
+                    name="dni"
+                    required
+                    class="custom-input"
+                  />
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Nombre</ion-label>
+                  <input
+                    [(ngModel)]="nuevaConsulta['nombre']"
+                    name="nombre"
+                    required
+                    class="custom-input"
+                  />
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Email</ion-label>
+                  <input
+                    [(ngModel)]="nuevaConsulta['email']"
+                    name="email"
+                    type="email"
+                    required
+                    class="custom-input"
+                  />
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">Teléfono</ion-label>
+                  <input
+                    [(ngModel)]="nuevaConsulta['telefono']"
+                    name="telefono"
+                    type="tel"
+                    required
+                    class="custom-input"
+                  />
+                </ion-item>
+                <ion-button expand="block" type="submit">Agregar Consulta</ion-button>
+              </form>
+            </div>
+          </ion-col>
+        </ion-row>
+<!-- Filtros -->
+<ion-grid fixed>
+  <ion-row>
+    <ion-col size="6">
+      <div class="custom-item">
+        <label for="emailFilter">Filtrar por Email</label>
+        <input
+          id="emailFilter"
+          [(ngModel)]="filtroEmail"
+          placeholder="Ingrese email"
+          (input)="aplicarFiltros()"
+          class="custom-input"
+        />
+      </div>
+    </ion-col>
+    <ion-col size="6">
+      <div class="custom-item">
+        <label for="dniFilter">Filtrar por DNI</label>
+        <input
+          id="dniFilter"
+          [(ngModel)]="filtroDni"
+          placeholder="Ingrese dni"
+          (input)="aplicarFiltros()"
+          class="custom-input"
+        />
+      </div>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col size="6">
+      <div class="custom-item">
+        <label for="dateFilter">Filtrar por Fecha (dd/mm/yyyy)</label>
+        <input
+          id="dateFilter"
+          [(ngModel)]="filtroFecha"
+          placeholder="Ingrese fecha"
+          (input)="aplicarFiltros()"
+          class="custom-input"
+        />
+      </div>
+    </ion-col>
+    <ion-col size="6">
+      <div class="custom-item">
+        <label for="monthFilter">Filtrar por Mes (mm/yyyy)</label>
+        <input
+          id="monthFilter"
+          [(ngModel)]="filtroMes"
+          placeholder="Ingrese mes/año"
+          (input)="aplicarFiltros()"
+          class="custom-input"
+        />
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+
+
+    <!-- Tabla de Consultas Manuales -->
+    <ion-row class="header-row">
+      <ion-col size="2"><strong>DNI</strong></ion-col>
+      <ion-col size="2"><strong>Nombre</strong></ion-col>
+      <ion-col size="4"><strong>Email</strong></ion-col>
+      <ion-col size="2"><strong>Teléfono</strong></ion-col>
+      <ion-col size="2"><strong>Fecha Creación</strong></ion-col>
+    </ion-row>
+    <ng-container *ngFor="let consulta of consultasFiltradas">
+      <ion-row>
+        <ion-col size="2">{{ consulta.dni }}</ion-col>
+        <ion-col size="2">{{ consulta.nombre }}</ion-col>
+        <ion-col size="4">{{ consulta.email }}</ion-col>
+        <ion-col size="2">{{ consulta.telefono }}</ion-col>
+        <ion-col size="2">{{ consulta.fechaFormateada }}</ion-col>
+      </ion-row>
+    </ng-container>
+
+
+  </ion-grid>
+</ion-content>

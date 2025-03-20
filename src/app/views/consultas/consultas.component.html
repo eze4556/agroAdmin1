@@ -11,10 +11,9 @@
   <!-- Filtros -->
   <ion-grid fixed>
     <ion-row>
-
       <ion-col size="6">
         <div class="custom-item">
-          <label for="emailFilter">Filtrar por Email</label>
+          <label for="labelFilter">Filtrar por Email</label>
           <input
             id="emailFilter"
             [(ngModel)]="filtroEmail"
@@ -26,7 +25,7 @@
       </ion-col>
       <ion-col size="6">
         <div class="custom-item">
-          <label for="dniFilter">Filtrar por DNI</label>
+          <label for="labelFilter">Filtrar por DNI</label>
           <input
             id="dniFilter"
             [(ngModel)]="filtroDni"
@@ -37,25 +36,55 @@
         </div>
       </ion-col>
     </ion-row>
+
+    <ion-row >
+      <ion-col size="6">
+        <div class="custom-item">
+          <label for="labelFilter">Filtrar por Fecha (dd/mm/yyyy)</label>
+          <input
+            id="dateFilter"
+            [(ngModel)]="filtroFecha"
+            placeholder="Ingrese fecha"
+            (input)="aplicarFiltros()"
+            class="custom-input"
+          />
+        </div>
+      </ion-col>
+      <ion-col size="6">
+        <div class="custom-item">
+          <label for="labelFilter">Filtrar por Mes (mm/yyyy)</label>
+          <input
+            id="monthFilter"
+            [(ngModel)]="filtroMes"
+            placeholder="Ingrese mes/año"
+            (input)="aplicarFiltros()"
+            class="custom-input"
+          />
+        </div>
+      </ion-col>
+
+    </ion-row>
   </ion-grid>
 
   <!-- Tabla de Consultas -->
   <ion-grid fixed>
     <ion-row class="header-row">
       <ion-col size="2"><strong>DNI</strong></ion-col>
-      <ion-col size="3"><strong>Email</strong></ion-col>
+      <ion-col size="2"><strong>Email</strong></ion-col>
       <ion-col size="1"><strong>Precio</strong></ion-col>
-      <ion-col size="2"><strong>Estado</strong></ion-col>
+      <ion-col size="2"><strong>Fecha</strong></ion-col>
+      <ion-col size="1"><strong>Estado</strong></ion-col>
       <ion-col size="4"><strong>Acciones</strong></ion-col>
     </ion-row>
 
     <ng-container *ngFor="let consulta of consultasFiltradas">
       <ion-row>
         <ion-col size="2">{{ consulta?.dni }}</ion-col>
-        <ion-col size="3">{{ consulta?.payerEmail }}</ion-col>
-        <ion-col size="1">{{ consulta?.price | currency: 'USD' }}</ion-col>
-        <ion-col size="2">{{ consulta?.status }}</ion-col>
-        <ion-col size="4">
+        <ion-col size="2">{{ consulta?.payerEmail }}</ion-col>
+        <ion-col size="1">{{ consulta?.price | currency: 'ARS' }}</ion-col>
+        <ion-col size="2">{{ formatFecha(consulta?.paymentDate) }}</ion-col>
+        <ion-col size="1">{{ consulta?.status }}</ion-col>
+        <ion-col size="3">
           <ion-button color="danger" fill="outline" (click)="eliminarConsulta(consulta)">
             Eliminar
           </ion-button>
