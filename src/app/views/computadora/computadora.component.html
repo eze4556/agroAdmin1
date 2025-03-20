@@ -15,19 +15,22 @@
   <ion-grid fixed>
     <ion-row>
       <ion-col size="12" sizeMd="6" sizeLg="4" *ngFor="let computadora of computadoras">
-        <ion-card (click)="verDetalles(computadora)">
-          <!-- Mostrar imagen si está disponible -->
-<img [src]="computadora.imagen" *ngIf="computadora?.imagen" onerror="this.style.display='none'" />
+        <ion-card class="computadora-card">
+          <div class="computadora-img-container">
+            <img [src]="computadora.imagen" *ngIf="computadora?.imagen" class="computadora-img" onerror="this.style.display='none'" />
+          </div>
           <ion-card-header>
             <ion-card-title>{{ computadora.nombre }}</ion-card-title>
           </ion-card-header>
-          <ion-card-content>
-            <p>Haz clic para ver más detalles.</p>
+          <ion-card-content class="card-buttons">
+            <ion-button color="primary" (click)="verDetalles(computadora)">Ver detalles</ion-button>
+            <ion-button color="secondary" (click)="editarComputadora(computadora)">Editar</ion-button>
           </ion-card-content>
         </ion-card>
       </ion-col>
     </ion-row>
   </ion-grid>
+
 
 
 

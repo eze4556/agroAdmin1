@@ -127,7 +127,7 @@ export class ComputadoraPage implements OnInit {
     }
   }
 
-async agregarOEditarComputadora() {
+  async agregarOEditarComputadora() {
     if (this.computadoraForm.invalid) {
       return;
     }
@@ -183,11 +183,27 @@ async agregarOEditarComputadora() {
     }
   }
 
-  openModal() {
+  openModal(computadora?: Computadoras) {
     this.isModalOpen = true;
-    this.editMode = false;
-    this.computadoraForm.reset();
+    this.editMode = !!computadora;
+
+    if (computadora) {
+      this.computadoraAEditar = computadora;
+      this.computadoraForm.patchValue({
+        id: computadora.id,
+        nombre: computadora.nombre,
+        tipo_pc: computadora.tipo_pc
+      });
+    } else {
+      this.computadoraAEditar = null;
+      this.computadoraForm.reset();
+    }
   }
+
+  editarComputadora(computadora: Computadoras) {
+    this.openModal(computadora);
+  }
+
 
   closeModal() {
     this.isModalOpen = false;
